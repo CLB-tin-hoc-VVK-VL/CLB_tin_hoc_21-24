@@ -1,0 +1,33 @@
+* danh sách biến: 
+- scl16     D3
+- sdo16     D4
+- bientro     A0
+- oldnum     0
+- so     0
+- olddnum     0
+- chon     0
+- oldchoo     0
+- kituchuan     32
+
+lcd:
+- nga     0
+- xtrai     1
+- xoa     2
+- cach     3
+- trong     4
+
+
+* danh sách hàm:
+- byte getkey(void)   			lấy số từ cảm ứng (1-16)
+- byte choo(void)				lấy giá trị từ biến trở (0-6)
+- void hienthihuongdan(int num)	in ra lcd danh sach ki tu trong phim cam ung
+- char xlchon(int bt, int num16)	in ra kí tự được lựa chọn
+- void lcou(char sys)			in ra màn hình các kí tự (tránh lỗi)
+- void xoahang(int hang)			xoa một hàng trên lcd
+- void xoao(int cot, int hang)		xoa một ô trên lcd
+
+
+vong lap:
+gán số bằng getkey()
+gán chon bằng choo()
+
