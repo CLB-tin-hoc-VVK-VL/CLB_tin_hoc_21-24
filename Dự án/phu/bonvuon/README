@@ -1,0 +1,85 @@
+mạch phát:
+ biến:
+	address 	-> biến lưu địa chỉ giao tiếp 	
+
+  	control[32] 	-> lưu lệnh gồm 16 bit dữ liệu
+	phan 		-> nhận tín hiệu chân D4
+	nha_phan	-> nhận tín hiệu chân D2
+	phun		-> nhận tín hiệu chân A7
+	cat		-> nhận tín hiệu chân D7
+	ha_cat		-> nhận tín hiệu chân D8
+	nang_cat	-> nhận tín hiệu chân D9
+	
+	content		-> biến lưu nội dung lệnh gửi
+
+	X_axis		-> biến lưu giá trị trục X joytick điều khiển di chuyển
+	Y_axis		-> biến lưu giá trị trục Y joytick điều khiển di chuyển
+	speedX 		-> biến lưu giá trị tốc độ di chuyển trục X
+	speedY		-> biến lưu giá trị tốc độ di chuyển trục Y
+	
+	Y_servo		-> biến lưu giá trị trục Y joytick điều khiển xoay cam
+
+	signal_phan	-> biến lưu tín hiệu rải phân (điều khiển quạt rải)
+	signal_phun	-> biến lưu tín hiệu phun thuốc
+	signal_cat 	-> biến lưu tín hiệu cắt cỏ
+	signal_ha_cat 	-> biến lưu tín hiệu hạ giàn cắt
+	signal_nang_cat -> biến lưu tín hiệu nâng giàn cắt
+	signal_nha_phan -> biến lưu tín hiệu nhả phân
+hàm:
+	send_data(char content[])	-> gửi content[] đến mạch thu
+
+
+-------------------------------------------------------------------------------------
+mạch thu:
+ biến:
+	address		-> biến lưu địa chỉ giao tiếp
+	tocdo0		-> biến lưu tốc độ 0 (dừng)
+	tocdo1 		-> biến lưu tốc độ 1 (85)
+	tocdo2		-> biến lưu tốc độ 2 (170)
+	tocdo3 		-> biến lưu tốc độ 3 (max)
+	
+	quat_phan	-> điều khiển quạt chân D2
+	phun		-> điều khiển máy bơm chân D3
+	cat		-> điều khiển lưỡi cắt chân D4
+	pwma		-> điều khiển băm xung nâng hạ giàn cắt chân D5
+	in1		-> điều khiển hướng giàn cắt chân D6
+	in2		-> điều khiển hướng giàn cắt chân D7
+	lpwm2		-> điều khiển hướng di chuyển bánh xích phải chân D8
+	rpwm2		-> điều khiển hướng di chuyển bánh xích phải chân D9
+	pwm2		-> điều khiển băm xung tốc độ bánh xích phải chân D10
+	pwm1		-> điều khiển băm xung tốc độ bánh xích trái chân D11
+	rpwm1		-> điều khiển hướng di chuyển bánh xích trái chân D12
+	lpwm1		-> điều khiển hướng di chuyển bánh xích trái chân D13
+
+	nha_phan 	-> điều khiển tín hiệu nhả phân chân D22
+	in3		-> điều khiển hướng di chuyển quạt phân chân D23
+	in4 		-> điều khiển hướng di chuyển quạt phân chân D24
+	
+	dirpin		-> điều khiển hướng di chuyển step motor chân D25
+	steppin		-> điều khiển bước nhảy step motor chân D26
+
+	control		-> biến nhận lệnh điều khiển
+	
+hàm:
+	receive_data()		-> nhận lệnh điều khiển từ mạch phát
+	tien(tocdo)		-> tiến về trước với tốc độ = tocdo
+	lui(tocdo)		-> lùi về sau với tốc độ = tocdo
+	dung(tocdo)		-> dừng tại chỗ với tốc độ = 0
+	trai(tocdo)		-> rẽ trái với bánh trái dừng và bánh phải tiến với tốc độ = tocdo
+	phai(tocdo)   		-> rẽ phải với bánh phải dừng và bánh trái tiến với tốc độ = tocdo
+	nang_cat(tocdo = 175)	-> nâng giàn cắt với tốc độ = 175, có thể tùy chỉnh bằng cách gọi hàm với tốc độ tùy chỉnh vd: nang_cat(tocdo3)
+	ha_cat(tocdo = 175) 		-> hạ giàn cắt với tốc độ = 175, có thể tùy chỉnh bằng cách gọi hàm với tốc độ tùy chỉnh vd: ha_cat(tocdo2)
+	dung_ha(tocdo = 0)	-> dừng việc nâng hạ giàn cắt
+	cat_co()		-> bắt đầu bặt lưỡi cắt
+	dung_cat_co() 		-> dừng lưỡi cắt cỏ
+	phun_thuoc()		-> bật máy bơm phun thuốc
+	dung_phun_thuoc()	-> tắt máy bơm phun thuốc
+	bat_quat()		-> bật quạt rải phân
+	tat_quat()		-> tắt quạt rải phân
+	rai_phan()		-> nhả phân ra ống bón phân
+	dung_rai()		-> dừng nhả phân ra ống
+	xoay_sang_trai(tocdo=1000)	-> xoay step motor sang trai voi toc do = 1000, có thể tùi chỉnh bằng cách gọi hàm với tốc độ tùy chỉnh vd: xoay_sang_phai(2590)
+
+	xoay_sang_phai(tocdo=1000)	-> xoay step motor sang phai voi toc do = 1000, có thể tùi chỉnh bằng cách gọi hàm với tốc độ tùy chỉnh vd: xoay_sang_phai(1570)
+
+	dung_xoay()		-> dừng xoay động cơ bước

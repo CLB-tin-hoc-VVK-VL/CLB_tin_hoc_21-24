@@ -185,7 +185,7 @@ void ha_cat(int tocdo = 175){
 
 
 void dung_ha(int tocdo = 0){
-  analogWrite(pwma, tocdo);
+  analogWrite(pwma, 0);
   digitalWrite(in1, 1);
   digitalWrite(in2, 1);
 }
