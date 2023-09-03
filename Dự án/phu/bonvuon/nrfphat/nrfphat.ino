@@ -3,7 +3,7 @@ tao lenh dieu khien hoat dong 16 bit voi cac bit dieu khien mot chuc nang
 
 1:1 bit dieu khien tien (0) va lui (1)
 2:3 bit dieu khien truc x
-4:1 bit dieu khien tien (0) va lui (1)
+4:1 bit dieu khien trai (0) va phai (1)
 5:3 bit dieu khien truc y tien
 8:1 bit dieu khien cat
 9:1 bit dieu khien gian cat nang

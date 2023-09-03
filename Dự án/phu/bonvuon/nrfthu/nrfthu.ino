@@ -53,6 +53,10 @@ nrf - mega:
 50 - miso
 51 - mosi
 52 - sck
+
+step motor
+D25 dirpin
+D26 step pin
 */
 
 
@@ -63,10 +67,10 @@ nrf - mega:
 
 RF24 radio(49, 48);               // CE, CSN
 const byte address[6] = "00001";  //address through which two modules communicate.
-#define toc_do_0 0
-#define toc_do_1 85
-#define toc_do_2 170
-#define toc_do_3 255
+#define tocdo0 0
+#define tocdo1 85
+#define tocdo2 170
+#define tocdo3 255
 
 #define quat_phan 2
 #define phun 3
@@ -85,6 +89,9 @@ const byte address[6] = "00001";  //address through which two modules communicat
 #define in3 23
 #define in4 24
 
+// ket noi voi driver a4988
+#define dirpin 25
+#define steppin 26
 
 void setup() {
   //----------set up address and check for connection
@@ -98,7 +105,7 @@ void setup() {
   for(int i = 2; i <= 13; i++){
     pinMode(i, OUTPUT);
   }
-  for(int j = 22; j <= 24; j++){
+  for(int j = 22; j <= 26; j++){
     pinMode(j , OUTPUT);
   }
   // --------
@@ -179,7 +186,7 @@ void ha_cat(int tocdo = 175){
 
 void dung_ha(int tocdo = 0){
   analogWrite(pwma, tocdo);
-  digitalWRite(in1, 1);
+  digitalWrite(in1, 1);
   digitalWrite(in2, 1);
 }
 
@@ -223,6 +230,33 @@ void dung_rai(){
 }
 
 
+//dieu khien stepmotor
+void xoay_sang_trai(int tocdo = 1000){
+  digitalWrite(dirpin, 0);
+  for(int x = 0; x < 10; x++){
+    digitalWrite(steppin, 1);
+    delayMicroseconds(tocdo);
+    digitalWrite(steppin, 0);
+    delayMicroseconds(tocdo);
+  }
+}
+
+void xoay_sang_phai(int tocdo = 1000){
+  digitalWrite(dirpin, 1);
+  for(int x = 0; x < 10; x++){
+    digitalWrite(steppin, 1);
+    delayMicroseconds(tocdo);
+    digitalWrite(steppin, 0);
+    delayMicroseconds(tocdo);
+  }
+}
+
+void dung_xoay(){
+  digitalWrite(dirpin, 0);
+  digitalWrite(steppin, 0);
+}
+
+
 byte* control; // luu du lieu dieu khien
 
 
@@ -233,12 +267,12 @@ void loop() {
   }
 
 
-  // doc du lieu dieu khien
+  // doc du lieu dieu khien di chuyen
   if(control[0] == 0){
     if(control[1] == 1 && control[2] == 1 && control[3] == 1){
       tien(tocdo3);
     }else if(control[1] == 0 && control[2] == 1 && control[3] == 1){
-      tien(tocod2);
+      tien(tocdo2);
     }else if(control[1] == 0 && control[2] == 0 && control[3] == 1){
       tien(tocdo1);
     }else {
@@ -248,11 +282,84 @@ void loop() {
     if(control[1] == 1 && control[2] == 1 && control[3] == 1){
       lui(tocdo3);
     }else if(control[1] == 0 && control[2] == 1 && control[3] == 1){
-      lui(tocod2);
+      lui(tocdo2);
     }else if(control[1] == 0 && control[2] == 0 && control[3] == 1){
       lui(tocdo1);
     }else {
       lui(tocdo0);
     }
+  }
+
+  if(control[4] == 0){
+    if(control[5] == 1 && control[6] == 1 && control[7] == 1){
+      trai(tocdo3);
+    }else if(control[5] == 0 && control[6] == 1 && control[7] == 1){
+      trai(tocdo2);
+    }else if(control[5] == 0 && control[6] == 0 && control[7] == 1){
+      trai(tocdo1);
+    }else {
+      trai(tocdo0);
+    }
+  } else if(control[0] == 1){
+    if(control[5] == 1 && control[6] == 1 && control[7] == 1){
+      phai(tocdo3);
+    }else if(control[5] == 0 && control[6] == 1 && control[7] == 1){
+      phai(tocdo2);
+    }else if(control[5] == 0 && control[6] == 0 && control[7] == 1){
+      phai(tocdo1);
+    }else {
+      phai(tocdo0);
+    }
+  }
+
+
+  // cat co
+  if(control[8] == 1){
+    cat_co();
+  }else {
+    dung_cat_co();
+  }
+
+
+  //nang ha cat
+  if(control[9] == 1){
+    nang_cat();
+  } else if(control[10] == 1){
+    ha_cat();
+  } else {
+    dung_ha();
+  }
+
+
+  //phun thuoc
+  if(control[11] == 1){
+    phun_thuoc();
+  }else {
+    dung_phun_thuoc();
+  }
+
+
+  //quat rai phan
+  if(control[12] == 1){
+    bat_quat();
+  } else {
+    tat_quat();
+  }
+
+
+  // quay camera
+  if(control[13] == 1){
+    xoay_sang_trai();
+  } else if(control[14] == 1){
+    xoay_sang_phai();
+  }else{
+    dung_xoay();
+  }
+
+  // nha phan
+  if(control[15] == 1){
+    rai_phan();
+  }else {
+    dung_rai();
   }
 }
