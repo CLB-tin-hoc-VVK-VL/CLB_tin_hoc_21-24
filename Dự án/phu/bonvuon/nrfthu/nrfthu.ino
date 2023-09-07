@@ -1,97 +1,106 @@
 /*
 tao lenh dieu khien hoat dong 16 bit voi cac bit dieu khien mot chuc nang
 
-1:1 bit dieu khien tien (0) va lui (1)
-2:3 bit dieu khien truc x
-4:1 bit dieu khien tien (0) va lui (1)
-5:3 bit dieu khien truc y tien
-8:1 bit dieu khien cat
-9:1 bit dieu khien gian cat nang
-10:1 bit dieu khien gian cat ha
-11:1 bit dieu khien phun
-12:1 bit dieu khien rai phan
-13:1 bit quay trai servo
-14:1 bit quay phai servo
-15:1 bit bat / tat nha phan
+0:1 bit dieu khien tien (0) va lui (1)
+1:2 bit dieu khien truc x
+3:1 bit dieu khien trai (0) va phai (1)
+5:2 bit dieu khien truc y 
 
-0 123 4 567 8 9 10  11  12  13  14  15
-0 000 0 000 0 0 0   0   0   0   0   0
+6:1 bit dieu khien cat
+7:1 bit dieu khien gian cat nang
+8:1 bit dieu khien gian cat ha
+
+9:1 bit dieu khien phun
+10:1 bit bat / tat quat phan
+11:1 bit dong /  nha phan
+
+12:1 bit quay trai step
+13:1 bit quay phai step
+14:1 bit chinh cam nang len
+15:1 bit chinh cam huong xuong
+
+0 12 3 45 6 7 8 9 10  11  12  13  14  15
+0 00 0 00 0 0 0 0 0   0   0   0   0   0
  
-di chuyen 1  (trai)
-D13 - LPWM1
-D12 - RPWM1
-D11 - PWM1
+nrf24			mega
+ miso		| 50
+ sck		| 52
+ mosi		| 51
+ ce		  | 48
+ csn		| 49
 
-di chuyen 2  (phai)
-D10 - PWM2
-D9 - RPWM2
-D8 - LPWM2
+driver1			mega    (trai)
+ lpwm		| 22
+ rpwm		| 23
+ pwm		| 2
 
-nang / ha cat + bat tat quat phan
-D7 - in2
-D6 - in1
-D5 - PWMA
-D23 - in3
-D24 - in4
-pwmb khong dung
+driver2			mega    (phai)
+ lpwm		| 24
+ rpwm		| 25
+ pwm 		| 3
 
-cat
-D4 - relay cat
+l298			mega
+ pwma		| 4         (nang ha cat)
+ in1		| 26
+ in2		| 27
+ in3 		| 28        (dong mo nha phan)
+ in4		| 29
+ pwmb		| not connect
 
-phun
-D3 - relay phun
+relay cat 	| 30
+relay phun	| 31
+relay quat	| 32
 
-phan
-D2 - relay quat
+driver a4988 	 	mega    (step motor)
+ dirpin		| 33
+ steppin	| 34
 
-nha phan
-D22 - relay nha
-
-nrf - mega:
-48 - csn
-49 - ce
-50 - miso
-51 - mosi
-52 - sck
-
-step motor
-D25 dirpin
-D26 step pin
+servo		| 5     
 */
 
 
 #include <SPI.h>
 #include <nRF24L01.h>
 #include <RF24.h>
+#include <Servo.h>
 
 
-RF24 radio(49, 48);               // CE, CSN
+Servo sercam;
+RF24 radio(48, 49);               // CE, CSN
 const byte address[6] = "00001";  //address through which two modules communicate.
 #define tocdo0 0
 #define tocdo1 85
 #define tocdo2 170
 #define tocdo3 255
+int angle = 90;
 
-#define quat_phan 2
-#define phun 3
-#define cat 4
-#define pwma 5
-#define in1 6
-#define in2 7
-#define lpwm2 8
-#define rpwm2 9
-#define pwm2 10
-#define pwm1 11
-#define rpwm1 12
-#define lpwm1 13
+//relay
+#define quat_phan 32
+#define phun 31
+#define cat 30
 
-#define nha_phan 22
-#define in3 23
-#define in4 24
+//nang ha cat
+#define pwma 4
+#define in1 26
+#define in2 27
+//dong mo nha phan
+#define in3 28
+#define in4 29
+
+//1 trai 2 phai
+#define lpwm2 24
+#define rpwm2 25
+#define pwm2 3
+#define pwm1 2
+#define rpwm1 23
+#define lpwm1 22
 
 // ket noi voi driver a4988
-#define dirpin 25
-#define steppin 26
+#define dirpin 33
+#define steppin 34
+
+//servo
+#define servo 5
 
 void setup() {
   //----------set up address and check for connection
@@ -100,12 +109,15 @@ void setup() {
   radio.startListening();
   //----------done
 
+  //----------servo setup 
+  sercam.attach(servo);
+  sercam.write(angle);
 
   // set up for pin
-  for(int i = 2; i <= 13; i++){
+  for(int i = 22; i <= 34; i++){
     pinMode(i, OUTPUT);
   }
-  for(int j = 22; j <= 26; j++){
+  for(int j = 2; j <= 4; j++){
     pinMode(j , OUTPUT);
   }
   // --------
@@ -209,24 +221,22 @@ void dung_phun_thuoc(){
 }
 
 
-void bat_quat(){
+void mo_phan(){
   digitalWrite(in3, 1);
   digitalWrite(in4, 0);
 }
 
-
-void tat_quat(){
+void giu_trang_thai_nha(){
   digitalWrite(in3, 1);
   digitalWrite(in4, 1);
 }
 
-
-void rai_phan(){
-  digitalWrite(nha_phan, 1);
+void bat_quat(){
+  digitalWrite(quat_phan, 1);
 }
 
-void dung_rai(){
-  digitalWrite(nha_phan, 0);
+void tat_quat(){
+  digitalWrite(quat_phan, 0);
 }
 
 
@@ -256,6 +266,19 @@ void dung_xoay(){
   digitalWrite(steppin, 0);
 }
 
+void cam_up(int step = 1){
+  if(angle < 180) {
+    angle += step;
+  }
+  sercam.write(angle);
+}
+
+void cam_down(int step = 1){
+  if(angle > 0) {
+    angle -= step;
+  }
+  sercam.write(angle);
+}
 
 byte* control; // luu du lieu dieu khien
 
@@ -267,54 +290,59 @@ void loop() {
   }
 
 
-  // doc du lieu dieu khien di chuyen
+  // doc du lieu dieu khien truc x
   if(control[0] == 0){
-    if(control[1] == 1 && control[2] == 1 && control[3] == 1){
+    if(control[1] == 1 && control[2] == 1){
       tien(tocdo3);
-    }else if(control[1] == 0 && control[2] == 1 && control[3] == 1){
+    }else if(control[1] == 1 && control[2] == 0){
       tien(tocdo2);
-    }else if(control[1] == 0 && control[2] == 0 && control[3] == 1){
+    }else if(control[1] == 0 && control[2] == 1){
       tien(tocdo1);
-    }else {
+    }else if(control[1] == 0 && control[2] == 0){
       tien(tocdo0);
     }
   } else if(control[0] == 1){
-    if(control[1] == 1 && control[2] == 1 && control[3] == 1){
+    if(control[1] == 1 && control[2] == 1){
       lui(tocdo3);
-    }else if(control[1] == 0 && control[2] == 1 && control[3] == 1){
+    }else if(control[1] == 1 && control[2] == 0){
       lui(tocdo2);
-    }else if(control[1] == 0 && control[2] == 0 && control[3] == 1){
+    }else if(control[1] == 0 && control[2] == 1){
       lui(tocdo1);
-    }else {
+    }else if(control[1] == 0 && control[2] == 0){
       lui(tocdo0);
     }
+  } else {
+    dung(tocdo0);
   }
 
-  if(control[4] == 0){
-    if(control[5] == 1 && control[6] == 1 && control[7] == 1){
+  // doc du lieu dieu khien truc y
+  if(control[3] == 0){
+    if(control[4] == 1 && control[5] == 1){
       trai(tocdo3);
-    }else if(control[5] == 0 && control[6] == 1 && control[7] == 1){
+    }else if(control[4] == 1 && control[5] == 0){
       trai(tocdo2);
-    }else if(control[5] == 0 && control[6] == 0 && control[7] == 1){
+    }else if(control[4] == 0 && control[5] == 1){
       trai(tocdo1);
-    }else {
+    }else if(control[4] == 0 && control[5] == 0){
       trai(tocdo0);
     }
-  } else if(control[0] == 1){
-    if(control[5] == 1 && control[6] == 1 && control[7] == 1){
+  } else if(control[3] == 1){
+    if(control[4] == 1 && control[5] == 1){
       phai(tocdo3);
-    }else if(control[5] == 0 && control[6] == 1 && control[7] == 1){
+    }else if(control[4] == 1 && control[5] == 0){
       phai(tocdo2);
-    }else if(control[5] == 0 && control[6] == 0 && control[7] == 1){
+    }else if(control[4] == 0 && control[5] == 1){
       phai(tocdo1);
-    }else {
+    }else if(control[4] == 0 && control[5] == 0){
       phai(tocdo0);
     }
+  } else {
+    dung(tocdo0);
   }
 
 
   // cat co
-  if(control[8] == 1){
+  if(control[6] == 1){
     cat_co();
   }else {
     dung_cat_co();
@@ -322,9 +350,9 @@ void loop() {
 
 
   //nang ha cat
-  if(control[9] == 1){
+  if(control[7] == 1 && control[8] == 0){
     nang_cat();
-  } else if(control[10] == 1){
+  } else if(control[7] == 0 && control[8] == 1){
     ha_cat();
   } else {
     dung_ha();
@@ -332,34 +360,43 @@ void loop() {
 
 
   //phun thuoc
-  if(control[11] == 1){
+  if(control[9] == 1){
     phun_thuoc();
   }else {
     dung_phun_thuoc();
   }
 
 
-  //quat rai phan
-  if(control[12] == 1){
+  //quat phan
+  if(control[10] == 1){
     bat_quat();
   } else {
     tat_quat();
   }
 
 
+  // nha phan
+  if(control[11] == 1){
+    mo_phan();
+  }else {
+    giu_trang_thai_nha();
+  }
+
+
   // quay camera
-  if(control[13] == 1){
+  if(control[12] == 1 && control[13] == 0){
     xoay_sang_trai();
-  } else if(control[14] == 1){
+  } else if(control[12] == 0 && control[13] == 1){
     xoay_sang_phai();
   }else{
     dung_xoay();
   }
-
-  // nha phan
-  if(control[15] == 1){
-    rai_phan();
+  
+  if(control[14] == 1 && control[15] == 0){
+    cam_up();
+  }else if(control[14] == 0 && control[15] == 1){
+    cam_down();
   }else {
-    dung_rai();
-  }
+    sercam.write(angle);
+  }  
 }

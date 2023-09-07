@@ -1,0 +1,34 @@
+nrf24			mega
+ miso		| 50
+ sck		| 52
+ mosi		| 51
+ ce		| 48
+ csn		| 49
+
+driver1			mega
+ lpwm		| 22
+ rpwm		| 23
+ pwm		| 2
+
+driver2			mega
+ lpwm		| 24
+ rpwm		| 25
+ pwm 		| 3
+
+l298			mega
+ pwma		| 4
+ in1		| 26
+ in2		| 27
+ in3 		| 28
+ in4		| 29
+ pwmb		| not connect
+
+relay cat 	| 30
+relay phun	| 31
+relay quat	| 32
+
+driver a4988 	 	mega
+ dirpin		| 33
+ steppin	| 34
+
+servo		| 5
