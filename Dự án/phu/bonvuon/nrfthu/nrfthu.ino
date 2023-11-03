@@ -63,10 +63,13 @@ servo		| 5
 #include <nRF24L01.h>
 #include <RF24.h>
 #include <Servo.h>
+#include <Stepper.h>
 
+const int stepsPerRevolution = 200;
 
 Servo sercam;
 RF24 radio(48, 49);               // CE, CSN
+Stepper myStepper(stepsPerRevolution, 8,9,10,11); 
 const byte address[6] = "00001";  //address through which two modules communicate.
 #define tocdo0 0
 #define tocdo1 85
@@ -242,28 +245,20 @@ void tat_quat(){
 
 //dieu khien stepmotor
 void xoay_sang_trai(int tocdo = 1000){
-  digitalWrite(dirpin, 0);
-  for(int x = 0; x < 10; x++){
-    digitalWrite(steppin, 1);
-    delayMicroseconds(tocdo);
-    digitalWrite(steppin, 0);
-    delayMicroseconds(tocdo);
-  }
+  myStepper.setSpeed(tocdo);
+  myStepper.step(-250);
+  delay(500);
 }
 
 void xoay_sang_phai(int tocdo = 1000){
-  digitalWrite(dirpin, 1);
-  for(int x = 0; x < 10; x++){
-    digitalWrite(steppin, 1);
-    delayMicroseconds(tocdo);
-    digitalWrite(steppin, 0);
-    delayMicroseconds(tocdo);
-  }
+  myStepper.setSpeed(tocdo);
+  myStepper.step(250);
+  delay(500);
 }
 
 void dung_xoay(){
-  digitalWrite(dirpin, 0);
-  digitalWrite(steppin, 0);
+  myStepper.setSpeed(0);
+  myStepper.step(0);
 }
 
 void cam_up(int step = 1){
