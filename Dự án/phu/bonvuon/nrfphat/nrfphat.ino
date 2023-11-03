@@ -30,10 +30,10 @@ POT1-A7 -> phun thuoc
 POT2-A6
 CE-D5   -> nrf
 CSN-D6  -> nrf
-XL-A0   -> tien lui
-YL-A1   -> trai phai
-YR-A2   -> cam trai phai
-XR-A3   -> cam nang ha
+XL-A3   -> tien lui
+YL-A2   -> trai phai
+YR-A1   -> cam trai phai
+XR-A0   -> cam nang ha
 */
 
 
@@ -79,10 +79,10 @@ void send_data(char content[]) {
 
 void loop() {
   // doc du lieu dieu khien tu joytick
-  int LX_axis = analogRead(A0);
-  int LY_axis = analogRead(A1);
-  int RY_axis = analogRead(A2);
-  int RX_axis = analogRead(A3);
+  int LX_axis = analogRead(A3);
+  int LY_axis = analogRead(A2);
+  int RY_axis = analogRead(A1);
+  int RX_axis = analogRead(A0);
 
   // chuyen doi thang do ve 3 muc toc do
   int speedX = map(LX_axis, 0, 1024, -3, 3);
