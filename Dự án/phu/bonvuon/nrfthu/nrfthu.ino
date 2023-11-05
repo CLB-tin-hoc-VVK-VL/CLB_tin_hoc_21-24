@@ -51,31 +51,31 @@ relay cat 	| 30
 relay phun	| 31
 relay quat	| 32
 
-driver a4988 	 	mega    (step motor)
- dirpin		| 33
- steppin	| 34
+L298	 	mega    (step motor)
+connect like this: https://lastminuteengineers.com/stepper-motor-l298n-arduino-tutorial/#google_vignette
 
-servo		| 5     
+servo		| 5   
+
+esp   mega
+D1  | 20
+D2  | 21
 */
 
 
-#include <SPI.h>
-#include <nRF24L01.h>
-#include <RF24.h>
+#include <Wire.h>
 #include <Servo.h>
 #include <Stepper.h>
 
 const int stepsPerRevolution = 200;
 
 Servo sercam;
-RF24 radio(48, 49);               // CE, CSN
 Stepper myStepper(stepsPerRevolution, 8,9,10,11); 
-const byte address[6] = "00001";  //address through which two modules communicate.
 #define tocdo0 0
 #define tocdo1 85
 #define tocdo2 170
 #define tocdo3 255
 int angle = 90;
+int control[16] = {};
 
 //relay
 #define quat_phan 32
@@ -107,9 +107,8 @@ int angle = 90;
 
 void setup() {
   //----------set up address and check for connection
-  radio.begin();
-  radio.openReadingPipe(0, address);
-  radio.startListening();
+  Wire.begin(8);                /* join i2c bus with address 8 */
+  Wire.onReceive(receiveEvent); /* register receive event */
   //----------done
 
   //----------servo setup 
@@ -126,12 +125,12 @@ void setup() {
   // --------
 }
 
-
-// nhan du lieu tu remote
-byte* receive_data() {
-  byte info[32] = { 0 };
-  radio.read(&info, sizeof(info));
-  return info;
+void receiveEvent(int howMany) {
+  while (0 < Wire.available()) {
+    for(int i = 0; i < 16; i++){
+      control[i] = Wire.read();
+    }
+  }
 }
 
 
@@ -275,16 +274,8 @@ void cam_down(int step = 1){
   sercam.write(angle);
 }
 
-byte* control; // luu du lieu dieu khien
-
 
 void loop() {
-  //Read the data if available in buffer
-  if (radio.available()) {
-    control = receive_data();
-  }
-
-
   // doc du lieu dieu khien truc x
   if(control[0] == 0){
     if(control[1] == 1 && control[2] == 1){
