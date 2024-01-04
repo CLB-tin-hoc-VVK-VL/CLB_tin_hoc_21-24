@@ -91,9 +91,8 @@ int control[16] = {};
 #define in4 29
 
 //1 trai 2 phai
-#define lpwm2 24
-#define rpwm2 25
-#define pwm2 3
+#define brake1 12
+#define brake2 13
 #define pwm1 2
 #define rpwm1 23
 #define lpwm1 22
@@ -116,6 +115,8 @@ void setup() {
   sercam.write(angle);
 
   // set up for pin
+  pinMode(brake1, OUTPUT);
+  pinMode(brake2, OUTPUT);
   for(int i = 22; i <= 34; i++){
     pinMode(i, OUTPUT);
   }
@@ -136,51 +137,51 @@ void receiveEvent(int howMany) {
 
 void tien(int tocdo){
   analogWrite(pwm1, tocdo);
-  analogWrite(pwm2, tocdo);
   digitalWrite(lpwm1, 1);
-  digitalWrite(lpwm2, 1);
   digitalWrite(rpwm1, 0);
-  digitalWrite(rpwm2, 0);
+
+  digitalWrite(brake1, 0);
+  digitalWrite(brake2, 0);
 }
 
 
 void lui(int tocdo){
   analogWrite(pwm1, tocdo);
-  analogWrite(pwm2, tocdo);
   digitalWrite(lpwm1, 0);
-  digitalWrite(lpwm2, 0);
   digitalWrite(rpwm1, 1);
-  digitalWrite(rpwm2, 1);
+
+  digitalWrite(brake1, 0);
+  digitalWrite(brake2, 0);
 }
 
 
 void dung(int tocdo){
   analogWrite(pwm1, 0);
-  analogWrite(pwm2, 0);
   digitalWrite(lpwm1, 1);
-  digitalWrite(lpwm2, 1);
   digitalWrite(rpwm1, 1);
-  digitalWrite(rpwm2, 1);
+
+  digitalWrite(brake1, 1);
+  digitalWrite(brake2, 1);
 }
 
 
 void trai(int tocdo){
-  analogWrite(pwm1, 0);
-  analogWrite(pwm2, tocdo);
+  analogWrite(pwm1, tocdo);
   digitalWrite(lpwm1, 1);
-  digitalWrite(lpwm2, 1);
   digitalWrite(rpwm1, 1);
-  digitalWrite(rpwm2, 0);
+
+  digitalWrite(brake1, 1);
+  digitalWrite(brake2, 0);
 }
 
 
 void phai(int tocdo){
   analogWrite(pwm1, tocdo);
-  analogWrite(pwm2, 0);
   digitalWrite(lpwm1, 1);
-  digitalWrite(lpwm2, 1);
   digitalWrite(rpwm1, 0);
-  digitalWrite(rpwm2, 1);
+
+  digitalWrite(brake1, 0);
+  digitalWrite(brake2, 1);
 }
 
 
