@@ -30,12 +30,12 @@ driver2			uno
  lpwm		| 11
  rpwm		| 10
  pwm 		| 9
-
-*--l298			mega
- pwma		| 4         (nang ha cat)
- in1		| 26
- in2		| 27
- in3 		| 28        (dong mo nha phan)
+ 
+l298			mega
+ pwma		| 3         (nang ha cat)
+ in1		| 5
+ in2		| 6
+ *--in3 		| 28        (dong mo nha phan)
  in4		| 29
  pwmb		| not connect
 
@@ -74,10 +74,10 @@ int control[16] = {};
 #define phun 2
 #define cat 7
 
-// //nang ha cat
-// #define pwma 4
-// #define in1 26
-// #define in2 27
+//nang ha cat
+#define pwma 3
+#define in1 5
+#define in2 6
 // //dong mo nha phan
 // #define in3 28
 // #define in4 29
@@ -115,6 +115,10 @@ void setup() {
   pinMode(pwm1, OUTPUT);
   pinMode(rpwm1, OUTPUT);
   pinMode(lpwm1, OUTPUT);
+  pinMode(pwma, OUTPUT);
+  pinMode(in1, OUTPUT);
+  pinMode(in2, OUTPUT);
+ 
   // --------
 }
 
@@ -177,25 +181,25 @@ void phai(int tocdo){
 }
 
 
-// void nang_cat(int tocdo = 175){
-//   analogWrite(pwma, tocdo);
-//   digitalWrite(in1, 1);
-//   digitalWrite(in2, 0);
-// }
+void nang_cat(int tocdo = 175){
+  analogWrite(pwma, tocdo);
+  digitalWrite(in1, 1);
+  digitalWrite(in2, 0);
+}
 
 
-// void ha_cat(int tocdo = 175){
-//   analogWrite(pwma, tocdo);
-//   digitalWrite(in1, 0);
-//   digitalWrite(in2, 1);
-// }
+void ha_cat(int tocdo = 175){
+  analogWrite(pwma, tocdo);
+  digitalWrite(in1, 0);
+  digitalWrite(in2, 1);
+}
 
 
-// void dung_ha(int tocdo = 0){
-//   analogWrite(pwma, 0);
-//   digitalWrite(in1, 1);
-//   digitalWrite(in2, 1);
-// }
+void dung_ha(int tocdo = 0){
+  analogWrite(pwma, 0);
+  digitalWrite(in1, 1);
+  digitalWrite(in2, 1);
+}
 
 
 void cat_co(){
@@ -328,14 +332,14 @@ void loop() {
   }
 
 
-  // //nang ha cat
-  // if(control[7] == 1 && control[8] == 0){
-  //   nang_cat();
-  // } else if(control[7] == 0 && control[8] == 1){
-  //   ha_cat();
-  // } else {
-  //   dung_ha();
-  // }
+  //nang ha cat
+  if(control[7] == 1 && control[8] == 0){
+    nang_cat();
+  } else if(control[7] == 0 && control[8] == 1){
+    ha_cat();
+  } else {
+    dung_ha();
+  }
 
 
   //phun thuoc
