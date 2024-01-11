@@ -118,7 +118,9 @@ void setup() {
   pinMode(pwma, OUTPUT);
   pinMode(in1, OUTPUT);
   pinMode(in2, OUTPUT);
- 
+
+  digitalWrite(brake1, 0);
+  digitalWrite(brake1, 0);
   // --------
 }
 
