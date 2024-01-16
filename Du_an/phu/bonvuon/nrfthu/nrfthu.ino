@@ -26,10 +26,15 @@ ESP 			uno
  SCL  |  SCL
  SDA  |  SDA
 
+driver1			uno
+ lpwm		| 13
+ rpwm		| 12
+ pwm 		| 11
+
 driver2			uno
- lpwm		| 11
- rpwm		| 10
- pwm 		| 9
+ lpwm		| 8
+ rpwm		| 9
+ pwm 		| 10
  
 l298			mega
  pwma		| 3         (nang ha cat)
@@ -83,11 +88,12 @@ int control[16] = {};
 // #define in4 29
 
 //1 trai 2 phai
-#define brake1 12
-#define brake2 13
-#define pwm1 9
-#define rpwm1 10
-#define lpwm1 11
+#define pwm2 11
+#define rpwm2 12
+#define lpwm2 13
+#define pwm1 10
+#define rpwm1 9
+#define lpwm1 8
 
 // // ket noi voi driver a4988
 // #define dirpin 33
@@ -107,20 +113,21 @@ void setup() {
   // sercam.write(angle);
 
   // set up for pin
-  pinMode(brake1, OUTPUT);
-  pinMode(brake2, OUTPUT);
   pinMode(phun, OUTPUT);
   pinMode(quat_phan, OUTPUT);
   pinMode(cat, OUTPUT);
+ 
   pinMode(pwm1, OUTPUT);
   pinMode(rpwm1, OUTPUT);
   pinMode(lpwm1, OUTPUT);
+ 
+  pinMode(pwm2, OUTPUT);
+  pinMode(rpwm2, OUTPUT);
+  pinMode(lpwm2, OUTPUT);
+ 
   pinMode(pwma, OUTPUT);
   pinMode(in1, OUTPUT);
   pinMode(in2, OUTPUT);
-
-  digitalWrite(brake1, 0);
-  digitalWrite(brake1, 0);
   // --------
 }
 
@@ -138,8 +145,9 @@ void tien(int tocdo){
   digitalWrite(lpwm1, 1);
   digitalWrite(rpwm1, 0);
 
-  digitalWrite(brake1, 1);
-  digitalWrite(brake2, 1);
+  analogWrite(pwm2, tocdo);
+  digitalWrite(lpwm2, 1);
+  digitalWrite(rpwm2, 0);
 }
 
 
@@ -148,8 +156,9 @@ void lui(int tocdo){
   digitalWrite(lpwm1, 0);
   digitalWrite(rpwm1, 1);
 
-  digitalWrite(brake1, 1);
-  digitalWrite(brake2, 1);
+  analogWrite(pwm2, tocdo);
+  digitalWrite(lpwm2, 0);
+  digitalWrite(rpwm2, 1);
 }
 
 
@@ -158,18 +167,20 @@ void dung(int tocdo = 0){
   digitalWrite(lpwm1, 1);
   digitalWrite(rpwm1, 1);
 
-  digitalWrite(brake1, 0);
-  digitalWrite(brake2, 0);
+  analogWrite(pwm2, 0);
+  digitalWrite(lpwm2, 1);
+  digitalWrite(rpwm2, 1);
 }
 
 
 void trai(int tocdo){
-  analogWrite(pwm1, tocdo);
+  analogWrite(pwm1, 0);
   digitalWrite(lpwm1, 1);
-  digitalWrite(rpwm1, 0);
+  digitalWrite(rpwm1, 1);
 
-  digitalWrite(brake1, 1);
-  digitalWrite(brake2, 0);
+  analogWrite(pwm2, tocdo);
+  digitalWrite(lpwm2, 1);
+  digitalWrite(rpwm2, 0);
 }
 
 
@@ -178,8 +189,9 @@ void phai(int tocdo){
   digitalWrite(lpwm1, 1);
   digitalWrite(rpwm1, 0);
 
-  digitalWrite(brake1, 0);
-  digitalWrite(brake2, 1);
+  analogWrite(pwm2, 0);
+  digitalWrite(lpwm2, 1);
+  digitalWrite(rpwm2, 1);
 }
 
 
