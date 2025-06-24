@@ -182,7 +182,7 @@ void vatcangiua() {
   if (giua2 == 0 || giua1 == 0) {
     trailui();
     phailui();
-
+   
     bandautrai = xungdctrai;
     bandauphai = xungdcphai;
 
@@ -191,7 +191,7 @@ void vatcangiua() {
     //      if (abs(xungdctrai - bandautrai) >= 2700)break;
     //    }
     delay(1000);
-
+ ;
     if (giua1 == 0) {
       traitien();
       phailui();
