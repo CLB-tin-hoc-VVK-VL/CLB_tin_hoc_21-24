@@ -13,8 +13,8 @@ Kho lưu trữ được tổ chức theo các thư mục dựa trên loại dự
 * Đối với các dự án code: Mở thư mục dự án và tìm tệp mã nguồn chính (`.ino` cho Arduino). Bạn sẽ cần các phần mềm hoặc môi trường phát triển tương ứng để biên dịch hoặc chạy mã.
 
 ## Tác giả
-* **[Nguyễn Thành Công]**
-* **[Đồng Ngọc Phú]**
+* **Nguyễn Thành Công**
+* **Đồng Ngọc Phú**
 
 ## Giấy phép
 
